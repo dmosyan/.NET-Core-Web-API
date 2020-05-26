@@ -15,7 +15,7 @@ namespace HPlusSport.API.Models
         public int UserId { get; set; } 
 
         [JsonIgnore]
-        public virtual User user { get; set; }
+        public virtual User User { get; set; }
         public virtual List<Product> Products { get; set; }
     }
 }

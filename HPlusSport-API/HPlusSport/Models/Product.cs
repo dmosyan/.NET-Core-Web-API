@@ -14,7 +14,7 @@ namespace HPlusSport.API.Models
 
         public string Name { get; set; }
 
-        public decimal Proce { get; set; }
+        public decimal Price { get; set; }
 
         public bool IsAvailable { get; set; }
 
