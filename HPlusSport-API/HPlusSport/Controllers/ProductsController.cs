@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HPlusSport.API.Controllers
 {
@@ -23,9 +25,22 @@ namespace HPlusSport.API.Controllers
 
 
         [HttpGet]
-        public IEnumerable<Product> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts()
         {
-            return _context.Products.ToArray();
+            return Ok( await _context.Products.ToArrayAsync());
+        }
+        
+
+        // [HttpGet("{id}")] is also possible
+        [HttpGet, Route("/products/{id}")]
+        public async Task<IActionResult> GetProduct(int id )
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            { 
+                return NotFound();
+            }
+            return Ok(product);
         }
     }
 }
