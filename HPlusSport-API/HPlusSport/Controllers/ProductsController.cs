@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using HPlusSport.API.Classes;
 using HPlusSport.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +26,15 @@ namespace HPlusSport.API.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<IActionResult> GetAllProducts([FromQuery] QueryParameters queryParameters)
         {
-            return Ok( await _context.Products.ToArrayAsync());
+            IQueryable<Product> products = _context.Products;
+
+            products = products
+                .Skip(queryParameters.Size * (queryParameters.Page - 1))
+                .Take(queryParameters.Size);
+
+            return Ok( await products.ToArrayAsync());
         }
         
 
