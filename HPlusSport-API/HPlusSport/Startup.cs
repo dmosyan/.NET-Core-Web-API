@@ -30,7 +30,14 @@ namespace WebApplication1
             services.AddDbContext<ShopContext>(options =>
                 options.UseInMemoryDatabase("Shop"));
 
-            services.AddControllers();
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    //use the default option if the Omdel State invalid, for example page=X which is not Int type
+                    //Anyway the JSON file will be sent with the default parameter page
+                    //options.SuppressModelStateInvalidFilter = true;
+                }
+                ); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
