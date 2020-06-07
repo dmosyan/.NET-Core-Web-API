@@ -52,7 +52,7 @@ namespace HPlusSport.API.Controllers
 
             if (!string.IsNullOrEmpty(queryParameters.SortBy))
             {
-                if(typeof(Product).GetProperty(queryParameters.SortBy) != null)
+                if (typeof(Product).GetProperty(queryParameters.SortBy) != null)
                 {
                     products = products.OrderByCustom(queryParameters.SortBy, queryParameters.SortOrder);
                 }
@@ -63,20 +63,33 @@ namespace HPlusSport.API.Controllers
                 .Skip(queryParameters.Size * (queryParameters.Page - 1))
                 .Take(queryParameters.Size);
 
-            return Ok( await products.ToArrayAsync());
+            return Ok(await products.ToArrayAsync());
         }
-        
+
 
         // [HttpGet("{id}")] is also possible
         [HttpGet, Route("/products/{id}")]
-        public async Task<IActionResult> GetProduct(int id )
+        public async Task<IActionResult> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
             if (product == null)
-            { 
+            {
                 return NotFound();
             }
             return Ok(product);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct([FromBody] Product product)
+        {
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(
+                "GetProduct",
+                new { id = product.Id },
+                product
+                );
         }
     }
 }
