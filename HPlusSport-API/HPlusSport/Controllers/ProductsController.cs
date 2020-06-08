@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -90,6 +91,31 @@ namespace HPlusSport.API.Controllers
                 new { id = product.Id },
                 product
                 );
+        }
+
+        [HttpPut("{id})")]
+        public async Task<IActionResult> PutProduct([FromRoute] int id, [FromBody] Product product)
+        {
+            if(id != product.Id)
+            {
+                return BadRequest();
+            }
+            _context.Entry(product).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DBConcurrencyException)
+            {
+                if(_context.Products.Find(id) == null)
+                {
+                    return NotFound();
+                }
+                throw;
+            }
+
+            return NoContent();
         }
     }
 }
